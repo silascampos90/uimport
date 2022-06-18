@@ -1,0 +1,23 @@
+.j-center{
+	justify-content: center;
+}
+
+.error {
+    color:#e51414;
+}
+
+input.error {
+    border: 1px solid #e51414;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.cad-btn{
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
