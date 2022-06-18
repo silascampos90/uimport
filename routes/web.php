@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Shipment\ShipmentFileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,5 +15,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('import.shipment');
+})->name('home');
+
+Route::group(['prefix' => 'import', 'as' => 'import.', 'middleware' => []], function() {    
+
+    Route::get('/shipment', [ShipmentFileController::class,'shipment'])->name('shipment');
+    Route::get('/list',[ShipmentFileController::class,'list'])->name('list');
+
 });
