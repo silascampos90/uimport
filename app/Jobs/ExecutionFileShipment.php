@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use App\Services\Shipment\ShipmentServices;
 
 class ExecutionFileShipment implements ShouldQueue
 {
@@ -16,6 +17,11 @@ class ExecutionFileShipment implements ShouldQueue
 
     public $tries = 3;
    
+
+    /**
+     * @var shipmentServices
+     */
+    private $shipmentServices;
 
     /**
      * Create a new job instance.
@@ -29,10 +35,15 @@ class ExecutionFileShipment implements ShouldQueue
     /**
      * Execute the job.
      *
+     * @param ShipmentServices $shipmentServices
      * @return void
      */
-    public function handle()
+    public function handle(ShipmentServices $shipmentServices)
     {
-        //
+        $this->shipmentServices = $shipmentServices;
+
+
+        $this->shipmentServices->readFileShipmentWithoutExecution();
+        
     }
 }

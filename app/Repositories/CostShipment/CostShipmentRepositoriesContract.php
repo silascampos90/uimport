@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 interface CostShipmentRepositoriesContract
 {     
    
-    public function saveCostShipment($costShipment);
+    public function saveCostShipment($costShipment, $allFilesWithoutExecution);
+    public function updateExecuteCostShipment($allFilesWithoutExecution);
  
 }

@@ -17,9 +17,9 @@ class CreateFilesImportsTable extends Migration
             $table->id();
             $table->string('from_postcode');
             $table->string('to_postcode');
-            $table->double('from_weight');
-            $table->double('to_weight');
-            $table->double('cost');
+            $table->Integer('from_weight');
+            $table->Integer('to_weight');
+            $table->Integer('cost');
             $table->timestamps();
         });
     }

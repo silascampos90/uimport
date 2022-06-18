@@ -21,17 +21,23 @@ class CostShipmentRepositoriesEloquent implements CostShipmentRepositoriesContra
     }
 
 
-    public function saveCostShipment($costShipment){
+    public function saveCostShipment($costShipment, $allFilesWithoutExecution){
        
         $costShip = new CostShipment();
 
         $costShip->from_postcode = $costShipment[0];
         $costShip->to_postcode =  $costShipment[1];
-        $costShip->from_weight = $costShipment[2];
-        $costShip->to_weight = str_replace(',','.',$costShipment[3]);
-        $costShip->cost =str_replace(',','.',$costShipment[4]);
-        $costShip->file_shipment_id = 1;       
-        return $costShip->save();;
+        $costShip->from_weight = str_replace([',','.'],'',$costShipment[2]);
+        $costShip->to_weight = str_replace([',','.'],'',$costShipment[3]);
+        $costShip->cost = str_replace([',','.'],'',$costShipment[4]);
+        $costShip->file_shipment_id = $allFilesWithoutExecution->id;        
+        return $costShip->save();
+
+    }
+
+    public function updateExecuteCostShipment($allFilesWithoutExecution){
+        $allFilesWithoutExecution->execute = 1;
+        return $allFilesWithoutExecution->save();
 
     }
    

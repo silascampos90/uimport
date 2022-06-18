@@ -20,12 +20,10 @@ class ShipmentServices implements ShipmentServicesContract
 
     public function __construct(
         ShipmentRepositoriesContract $shipmentRepoContract,
-        CostShipmentRepositoriesContract $costShipmentRepoContract,
-        ExecutionFileShipment $jobShipment
+        CostShipmentRepositoriesContract $costShipmentRepoContract
     ) {
         $this->shipmentRepoContract = $shipmentRepoContract;
         $this->costShipmentRepoContract = $costShipmentRepoContract;
-        $this->jobShipment = $jobShipment;
     }
 
 
@@ -62,12 +60,15 @@ class ShipmentServices implements ShipmentServicesContract
 
         fclose($open);
 
-        if (!$this->shipmentRepoContract->saveUploadFile($fileModel)) {
+        $fileUpdated = $this->shipmentRepoContract->saveUploadFile($fileModel);
+
+        if (!$fileUpdated) {
             unlink($file);
             return new JsonResponse(['message' => 'Erro ao salvar o upload no banco de dados.'], 400);
         }
 
-        return $this->createJobToExecution($fileModel);
+        ExecutionFileShipment::dispatch();
+        return $fileUpdated;
     }
 
 
@@ -75,31 +76,27 @@ class ShipmentServices implements ShipmentServicesContract
     {
         return $this->shipmentRepoContract->getShipmentFiles();
     }
-
-    public function createJobToExecution($fileModel)
-    {
-        return true;
-    }
-
+  
 
     public function readFileShipmentWithoutExecution()
     {
 
-        $allFilesWithoutExecution = $this->shipmentRepoContract->getFilesWithoutExecution();        
-        
+        $allFilesWithoutExecution = $this->shipmentRepoContract->getFilesWithoutExecution(); 
+
         foreach ($allFilesWithoutExecution as $afw) {
 
             $file = fopen(public_path('uploads') . '/' . $afw->name, 'r');
-         
-            while (($open = fgetcsv($file, null, ';')) !== FALSE) {
-              
-                if($open[0]!='' && $open[0]!= 'from_postcode'){  
-                                    
-                    if(!$this->costShipmentRepoContract->saveCostShipment($open))
-                        return new JsonResponse(['message' => 'Erro ao salvar o upload no banco de dados.'], 400);
-                }
 
+            while (($open = fgetcsv($file, null, ';')) !== FALSE) {
+
+                if ($open[0] != '' && $open[0] != 'from_postcode') {
+
+                    if (!$this->costShipmentRepoContract->saveCostShipment($open, $afw))
+                        return new JsonResponse(['message' => 'Erro ao salvar o upload no banco de dados.'], 400);
                     
+                    if (!$this->costShipmentRepoContract->updateExecuteCostShipment($afw))
+                        return new JsonResponse(['message' => 'Erro ao atualizar Cost Shipment.'], 400);
+                }
             }
 
             fclose($file);
