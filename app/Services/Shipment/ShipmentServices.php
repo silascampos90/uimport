@@ -3,21 +3,29 @@
 namespace App\Services\Shipment;
 
 use App\Models\ShipmentFile;
+use App\Jobs\ExecutionFileShipment;
 use App\Services\Shipment\ShipmentServicesContract;
 use App\Repositories\Shipment\ShipmentRepositoriesContract;
+use App\Repositories\CostShipment\CostShipmentRepositoriesContract;
 use Illuminate\Http\JsonResponse;
 
 class ShipmentServices implements ShipmentServicesContract
 {
 
     protected $shipmentRepoContract;
+    protected $costShipmentRepoContract;
 
     const enableExtension = ['csv'];
     const defaultFileHeader = ['from_postcode', 'to_postcode', 'from_weight', 'to_weight', 'cost'];
 
-    public function __construct(ShipmentRepositoriesContract $shipmentRepoContract)
-    {
+    public function __construct(
+        ShipmentRepositoriesContract $shipmentRepoContract,
+        CostShipmentRepositoriesContract $costShipmentRepoContract,
+        ExecutionFileShipment $jobShipment
+    ) {
         $this->shipmentRepoContract = $shipmentRepoContract;
+        $this->costShipmentRepoContract = $costShipmentRepoContract;
+        $this->jobShipment = $jobShipment;
     }
 
 
@@ -54,11 +62,46 @@ class ShipmentServices implements ShipmentServicesContract
 
         fclose($open);
 
-        return $this->shipmentRepoContract->saveUploadFile($fileModel);
+        if (!$this->shipmentRepoContract->saveUploadFile($fileModel)) {
+            unlink($file);
+            return new JsonResponse(['message' => 'Erro ao salvar o upload no banco de dados.'], 400);
+        }
+
+        return $this->createJobToExecution($fileModel);
     }
 
 
-    public function getShipmentFiles(){
+    public function getShipmentFiles()
+    {
         return $this->shipmentRepoContract->getShipmentFiles();
+    }
+
+    public function createJobToExecution($fileModel)
+    {
+        return true;
+    }
+
+
+    public function readFileShipmentWithoutExecution()
+    {
+
+        $allFilesWithoutExecution = $this->shipmentRepoContract->getFilesWithoutExecution();        
+
+        foreach ($allFilesWithoutExecution as $afw) {
+
+            $file = fopen(public_path('uploads') . '/' . $afw->name, 'r');
+         
+            while (($open = fgetcsv($file, null, ';')) !== FALSE) {
+              
+                if($open[0]!='' && $open[0]!= 'from_postcode'){   
+                                     
+                    $this->costShipmentRepoContract->saveCostShipment($open);
+                }
+
+                    
+            }
+
+            fclose($file);
+        }
     }
 }

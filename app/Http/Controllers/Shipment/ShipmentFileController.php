@@ -49,4 +49,18 @@ class ShipmentFileController extends Controller
         }
     }
 
+    public function getFilesWithoutExecution()
+    {
+        try {
+
+           
+
+            return $this->shipServiceContract->readFileShipmentWithoutExecution();
+
+        } catch (Throwable $e) {
+
+            return new JsonResponse(['message' => $e->getMessage()], 500);
+        }
+    }
+
 }

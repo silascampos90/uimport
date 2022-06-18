@@ -13,7 +13,7 @@ class CreateFilesImportsTable extends Migration
      */
     public function up()
     {
-        Schema::create('coast_shipments', function (Blueprint $table) {
+        Schema::create('cost_shipments', function (Blueprint $table) {
             $table->id();
             $table->string('from_postcode');
             $table->string('to_postcode');
@@ -31,6 +31,6 @@ class CreateFilesImportsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('coast_shipments');
+        Schema::dropIfExists('cost_shipments');
     }
 }
