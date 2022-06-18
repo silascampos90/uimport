@@ -86,16 +86,17 @@ class ShipmentServices implements ShipmentServicesContract
     {
 
         $allFilesWithoutExecution = $this->shipmentRepoContract->getFilesWithoutExecution();        
-
+        
         foreach ($allFilesWithoutExecution as $afw) {
 
             $file = fopen(public_path('uploads') . '/' . $afw->name, 'r');
          
             while (($open = fgetcsv($file, null, ';')) !== FALSE) {
               
-                if($open[0]!='' && $open[0]!= 'from_postcode'){   
-                                     
-                    $this->costShipmentRepoContract->saveCostShipment($open);
+                if($open[0]!='' && $open[0]!= 'from_postcode'){  
+                                    
+                    if(!$this->costShipmentRepoContract->saveCostShipment($open))
+                        return new JsonResponse(['message' => 'Erro ao salvar o upload no banco de dados.'], 400);
                 }
 
                     

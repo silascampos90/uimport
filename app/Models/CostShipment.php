@@ -18,4 +18,15 @@ class CostShipment extends Model
         'file_shipment_id'
     ];
 
+    protected $forcedNullFields = [];
+
+    public function setAttribute($key, $value)
+    {
+        if ($value === '') {
+            $value = null;
+        }
+
+        return parent::setAttribute($key, $value);
+    }
+
 }
