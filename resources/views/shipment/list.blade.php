@@ -11,8 +11,9 @@
 						<table id="example2" class="table table-striped table-bordered">
 							<colgroup>
 								<col span="1" style="width: 5%;">
-								<col span="1" style="width: 60%;">
+								<col span="1" style="width: 50%;">
 								<col span="1" style="width: 15%;">
+								<col span="1" style="width: 10%;">
 								<col span="1" style="width: 10%;">
 								<col span="1" style="width: 10%;">
 							</colgroup>
@@ -23,6 +24,7 @@
 									<th>Date</th>
 									<th>Size</th>
 									<th>Status</th>
+									<th></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -30,9 +32,10 @@
 								<tr>
 									<th scope="row">{{ $fs->id }}</th>
 									<td>{{ $fs->name }}</td>
-									<td>{{ $fs->data_import }}</td>
+									<td>{{ $fs->date_import }}</td>
 									<td>{{ $fs->size }} mb</td>
 									<td>{{ $fs->status_id }}</td>
+									<td></td>
 								</tr>
 								@endforeach
 							</tbody>
@@ -43,6 +46,7 @@
 									<th>Date</th>
 									<th>Size</th>
 									<th>Status</th>
+									<th></th>
 								</tr>
 							</tfoot>
 						</table>

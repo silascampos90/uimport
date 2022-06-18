@@ -11,6 +11,10 @@ class ShipmentFile extends Model
 
     protected $table = 'files_cost_shipment_imports';
 
+    protected $dates = [
+        'date_import'
+    ];
+
     protected $fillable = [
         'name',
         'date_import',
@@ -20,5 +24,8 @@ class ShipmentFile extends Model
     ];
 
 
-
+    protected function asDateTime($value)
+    {
+        return parent::asDateTime($value)->format('d/m/y H:i');
+    }
 }
