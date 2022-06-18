@@ -13,15 +13,15 @@ class AddForeingkeyFileToFilesCostShipmentImports extends Migration
      */
     public function up()
     {
-        Schema::table('files_cost_shipment_imports', function (Blueprint $table) {
+        Schema::table('coast_shipments', function (Blueprint $table) {
 
-            $table->unsignedBigInteger('coast_shipment_id')
-            ->after('status_id')
+            $table->unsignedBigInteger('file_shipment_id')
+            ->after('cost')
             ->nullable();
 
-            $table->foreign('coast_shipment_id')
+            $table->foreign('file_shipment_id')
             ->references('id')
-            ->on('coast_shipments');
+            ->on('files_cost_shipment_imports');
         });
     }
 
@@ -32,8 +32,8 @@ class AddForeingkeyFileToFilesCostShipmentImports extends Migration
      */
     public function down()
     {
-        Schema::table('files_cost_shipment_imports', function (Blueprint $table) {
-            $table->dropForeign(['coast_shipment_id']);
+        Schema::table('coast_shipments', function (Blueprint $table) {
+            $table->dropForeign(['file_shipment_id']);
         });
     }
 }

@@ -15,7 +15,8 @@ class ShipmentFile extends Model
         'name',
         'date_import',
         'size',
-        'status_id'
+        'status_id',
+        'execute'
     ];
 
 

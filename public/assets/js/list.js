@@ -3,7 +3,8 @@ $(document).ready(function () {
 
     var table = $('#example2').DataTable({
         lengthChange: false,
-        buttons: ['copy', 'excel', 'pdf', 'print']
+        "bPaginate": false,
+        "bInfo" : false
     });
 
     table.buttons().container()

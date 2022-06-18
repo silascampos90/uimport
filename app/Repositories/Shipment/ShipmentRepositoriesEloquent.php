@@ -14,6 +14,9 @@ use Exception;
 class ShipmentRepositoriesEloquent implements ShipmentRepositoriesContract
 {
 
+    public function __construct(ShipmentFile $shipFile){
+        $this->shipFile = $shipFile;
+    }
    
 
     public function uploadFile($request)
@@ -31,5 +34,10 @@ class ShipmentRepositoriesEloquent implements ShipmentRepositoriesContract
 
     public function saveUploadFile($fileModel){
         return $fileModel->save();
+    }
+
+    public function getShipmentFiles(){
+        
+        return $this->shipFile->paginate(10);
     }
 }

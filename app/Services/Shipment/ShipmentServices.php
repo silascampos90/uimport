@@ -56,4 +56,9 @@ class ShipmentServices implements ShipmentServicesContract
 
         return $this->shipmentRepoContract->saveUploadFile($fileModel);
     }
+
+
+    public function getShipmentFiles(){
+        return $this->shipmentRepoContract->getShipmentFiles();
+    }
 }
