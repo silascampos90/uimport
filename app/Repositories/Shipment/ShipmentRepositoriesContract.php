@@ -6,4 +6,7 @@ use Illuminate\Http\Request;
 interface ShipmentRepositoriesContract
 {     
    
+    public function uploadFile($request);
+    public function saveUploadFile($fileModel);
+    
 }
