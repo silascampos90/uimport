@@ -36,7 +36,7 @@
 								<tr>
 									<th scope="row">{{ $fs->id }}</th>
 									<td>{{ $fs->name }}</td>
-									<td>{{ $fs->date_import }}</td>
+									<td>{{ $fs->dataFormated() }}</td>
 									<td>{{ $fs->line_read }}</td>
 									<td>{{ $fs->line_total }}</td>
 									<td>{{ $fs->size }} mb</td>
