@@ -38,7 +38,7 @@ class ShipmentRepositoriesEloquent implements ShipmentRepositoriesContract
     }
 
     public function saveUploadFile($fileModel)
-    {
+    {     
         return $fileModel->save();
     }
 
@@ -49,6 +49,6 @@ class ShipmentRepositoriesEloquent implements ShipmentRepositoriesContract
 
     public function getFilesWithoutExecution()
     {
-        return $this->shipFile->where('execute', 0)->get();
+        return $this->shipFile->where('execute', 0)->first();
     }
 }

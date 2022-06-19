@@ -17,6 +17,7 @@ class ShipmentServices implements ShipmentServicesContract
 
     const enableExtension = ['csv'];
     const defaultFileHeader = ['from_postcode', 'to_postcode', 'from_weight', 'to_weight', 'cost'];
+    const limitRowByExecution = 5000;
 
     public function __construct(
         ShipmentRepositoriesContract $shipmentRepoContract,
@@ -47,8 +48,10 @@ class ShipmentServices implements ShipmentServicesContract
     public function checkFileShipmentCost($fileModel)
     {
         $file = public_path('uploads') . '/' . $fileModel->name;
+        $fileModel->line_total = count(file($file));
 
         if (($open = fopen($file, "r")) !== FALSE) {
+
             $fileHeader = explode(';', fgetcsv($open)[0]);
             $arrayDiff = array_diff($fileHeader, ShipmentServices::defaultFileHeader);
             if ($arrayDiff) {
@@ -68,6 +71,7 @@ class ShipmentServices implements ShipmentServicesContract
         }
 
         ExecutionFileShipment::dispatch();
+
         return $fileUpdated;
     }
 
@@ -76,30 +80,36 @@ class ShipmentServices implements ShipmentServicesContract
     {
         return $this->shipmentRepoContract->getShipmentFiles();
     }
-  
 
     public function readFileShipmentWithoutExecution()
     {
+        $fileWithoutExecution = $this->shipmentRepoContract->getFilesWithoutExecution();
 
-        $allFilesWithoutExecution = $this->shipmentRepoContract->getFilesWithoutExecution(); 
+        if ($fileWithoutExecution) {
 
-        foreach ($allFilesWithoutExecution as $afw) {
+            $lineTotal = $fileWithoutExecution->line_read + ShipmentServices::limitRowByExecution;
 
-            $file = fopen(public_path('uploads') . '/' . $afw->name, 'r');
+            $lineTotal = $lineTotal >= $fileWithoutExecution->line_total ? $fileWithoutExecution->line_total : $lineTotal;
 
-            while (($open = fgetcsv($file, null, ';')) !== FALSE) {
+            $file = file(public_path('uploads') . '/' . $fileWithoutExecution->name);
 
-                if ($open[0] != '' && $open[0] != 'from_postcode') {
+            foreach ($file as $index => $row) if ($index++ < $lineTotal) {
+                if ($index > $fileWithoutExecution->line_read) {
 
-                    if (!$this->costShipmentRepoContract->saveCostShipment($open, $afw))
+                    if (!$this->costShipmentRepoContract->saveCostShipment(explode(';', str_replace("\r\n", '', $row)), $fileWithoutExecution))
                         return new JsonResponse(['message' => 'Erro ao salvar o upload no banco de dados.'], 400);
-                    
-                    if (!$this->costShipmentRepoContract->updateExecuteCostShipment($afw))
-                        return new JsonResponse(['message' => 'Erro ao atualizar Cost Shipment.'], 400);
                 }
             }
 
-            fclose($file);
+            if (!$this->costShipmentRepoContract->updateLastReadRowCostShipment($fileWithoutExecution, $lineTotal))
+                return new JsonResponse(['message' => 'Erro ao atualizar a última linha lida.'], 400);
+
+            if ($lineTotal == $fileWithoutExecution->line_total) {
+                if (!$this->costShipmentRepoContract->updateExecuteCostShipment($fileWithoutExecution))
+                    return new JsonResponse(['message' => 'Erro ao atualizar Cost Shipment.'], 400);
+            }else{
+                ExecutionFileShipment::dispatch();
+            }
         }
     }
 }

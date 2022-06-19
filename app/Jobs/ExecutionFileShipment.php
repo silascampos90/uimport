@@ -22,14 +22,16 @@ class ExecutionFileShipment implements ShouldQueue
      * @var shipmentServices
      */
     private $shipmentServices;
+    protected $row;
 
     /**
      * Create a new job instance.
-     *
+     * @param int $row
      * @return void
      */
     public function __construct()
     {
+        
     }
 
     /**
@@ -41,7 +43,6 @@ class ExecutionFileShipment implements ShouldQueue
     public function handle(ShipmentServices $shipmentServices)
     {
         $this->shipmentServices = $shipmentServices;
-
 
         $this->shipmentServices->readFileShipmentWithoutExecution();
         

@@ -8,5 +8,6 @@ interface CostShipmentRepositoriesContract
    
     public function saveCostShipment($costShipment, $allFilesWithoutExecution);
     public function updateExecuteCostShipment($allFilesWithoutExecution);
+    public function updateLastReadRowCostShipment($allFilesWithoutExecution, int $row);
  
 }

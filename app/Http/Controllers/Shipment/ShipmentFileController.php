@@ -54,16 +54,17 @@ class ShipmentFileController extends Controller
 
     public function getFilesWithoutExecution()
     {
-        DB::beginTransaction();
+        
+        // DB::beginTransaction();
         try {
            
-            $fileUpdated = $this->shipServiceContract->readFileShipmentWithoutExecution();
+            $fileUpdated = $this->shipServiceContract->readFileShipmentWithoutExecution(0);
 
-            DB::commit();
+            // DB::commit();
 
             return $fileUpdated;
         } catch (Throwable $e) {
-            DB::rollback();
+            // DB::rollback();
             return new JsonResponse(['message' => $e->getMessage()], 500);
         }
     }
