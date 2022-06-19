@@ -22,5 +22,12 @@ class ShipmentFile extends Model
     ];
 
 
+    public function status(){
+        return $this->hasOne(StatusImport::class, 'id', 'status_id');
+    }
+
+
+
+
   
 }

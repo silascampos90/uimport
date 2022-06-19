@@ -12,13 +12,24 @@ use Illuminate\Http\JsonResponse;
 class ShipmentServices implements ShipmentServicesContract
 {
 
+    /**
+     * @var ShipmentRepositoriesContract
+     */
     protected $shipmentRepoContract;
+
+    /**
+     * @var CostShipmentRepositoriesContract
+     */
     protected $costShipmentRepoContract;
 
-    const enableExtension = ['csv'];
-    const defaultFileHeader = ['from_postcode', 'to_postcode', 'from_weight', 'to_weight', 'cost'];
-    const limitRowByExecution = 5000;
+    const ENABLE_EXTENSION = ['csv'];
+    const DEFAULT_FILE_HEADER = ['from_postcode', 'to_postcode', 'from_weight', 'to_weight', 'cost'];
+    const LIMIT_ROW_EXECUTION = 3000;
 
+    /**
+     * @param ShipmentRepositoriesContract $shipmentRepoContract
+     * @param CostShipmentRepositoriesContract $costShipmentRepoContract
+     */
     public function __construct(
         ShipmentRepositoriesContract $shipmentRepoContract,
         CostShipmentRepositoriesContract $costShipmentRepoContract
@@ -27,24 +38,26 @@ class ShipmentServices implements ShipmentServicesContract
         $this->costShipmentRepoContract = $costShipmentRepoContract;
     }
 
-
+    /**
+     * Upload file from server
+     * @param Request $request
+     * @return mixed
+     */
     public function uploadFile($request)
     {
         $extension = $request->file('importCsvFile')->getClientOriginalExtension();
 
-        if (!in_array($extension, ShipmentServices::enableExtension))
-            return new JsonResponse(['message' => 'Apenas as extensões [' . implode(',', ShipmentServices::enableExtension) . '] são permitidas.'], 400);
+        if (!in_array($extension, ShipmentServices::ENABLE_EXTENSION))
+            return new JsonResponse(['message' => 'Apenas as extensões [' . implode(',', ShipmentServices::ENABLE_EXTENSION) . '] são permitidas.'], 400);
 
         return $this->checkFileShipmentCost($this->shipmentRepoContract->uploadFile($request));
     }
-
 
     /**
      * Check if the file is in default
      * @param ShipmentFile $fileModel
      * @return boolean
      */
-
     public function checkFileShipmentCost($fileModel)
     {
         $file = public_path('uploads') . '/' . $fileModel->name;
@@ -53,7 +66,7 @@ class ShipmentServices implements ShipmentServicesContract
         if (($open = fopen($file, "r")) !== FALSE) {
 
             $fileHeader = explode(';', fgetcsv($open)[0]);
-            $arrayDiff = array_diff($fileHeader, ShipmentServices::defaultFileHeader);
+            $arrayDiff = array_diff($fileHeader, ShipmentServices::DEFAULT_FILE_HEADER);
             if ($arrayDiff) {
                 fclose($open);
                 unlink($file);
@@ -75,11 +88,30 @@ class ShipmentServices implements ShipmentServicesContract
         return $fileUpdated;
     }
 
+    /**
+     * Catch unplayed files
+     * @return mixed
+     */
 
     public function getShipmentFiles()
     {
         return $this->shipmentRepoContract->getShipmentFiles();
     }
+
+    /**
+     * Upadate Status Cost file Shipment
+     * @return mixed
+     */
+
+    public function updateStatusCostShipment($fileWithoutExecution, $status)
+    {
+        return $this->costShipmentRepoContract->updateStatusCostShipment($fileWithoutExecution, $status);
+    }
+
+    /**
+     * Execution file and import to database
+     * @return mixed
+     */
 
     public function readFileShipmentWithoutExecution()
     {
@@ -87,13 +119,17 @@ class ShipmentServices implements ShipmentServicesContract
 
         if ($fileWithoutExecution) {
 
-            $lineTotal = $fileWithoutExecution->line_read + ShipmentServices::limitRowByExecution;
+            if (!$this->updateStatusCostShipment($fileWithoutExecution, 2))
+                return new JsonResponse(['message' => 'Erro ao atualizar o status do file cost shipment.'], 400);
+
+            $lineTotal = $fileWithoutExecution->line_read + ShipmentServices::LIMIT_ROW_EXECUTION;
 
             $lineTotal = $lineTotal >= $fileWithoutExecution->line_total ? $fileWithoutExecution->line_total : $lineTotal;
 
             $file = file(public_path('uploads') . '/' . $fileWithoutExecution->name);
 
             foreach ($file as $index => $row) if ($index++ < $lineTotal) {
+
                 if ($index > $fileWithoutExecution->line_read) {
 
                     if (!$this->costShipmentRepoContract->saveCostShipment(explode(';', str_replace("\r\n", '', $row)), $fileWithoutExecution))
@@ -107,8 +143,8 @@ class ShipmentServices implements ShipmentServicesContract
             if ($lineTotal == $fileWithoutExecution->line_total) {
                 if (!$this->costShipmentRepoContract->updateExecuteCostShipment($fileWithoutExecution))
                     return new JsonResponse(['message' => 'Erro ao atualizar Cost Shipment.'], 400);
-            }else{
-                ExecutionFileShipment::dispatch();
+            } else {
+                ExecutionFileShipment::dispatch()->delay(now()->addSeconds(30));
             }
         }
     }
