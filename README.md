@@ -14,8 +14,8 @@ Projeto Laravel para upload de grandes arquivos php, utilizando fila como tratat
 ## Execução
 
 -------------------------
-Dentro do projeto clonado:
-    composer install
+Dentro do projeto clonado:</br>
+    <code>composer install</code>
  
 Compiar o .env: </br>
     <code>cp .env.example .env</code>
