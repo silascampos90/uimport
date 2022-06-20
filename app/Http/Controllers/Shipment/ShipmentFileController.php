@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Services\Shipment\ShipmentServicesContract;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Throwable;
 use Exception;
@@ -21,13 +22,15 @@ class ShipmentFileController extends Controller
         $this->shipServiceContract = $shipServiceContract;
     }
 
-    public function list(){
+    public function list()
+    {
         $filesShipment = $this->shipServiceContract->getShipmentFiles();
         return view('shipment/list', compact('filesShipment'));
     }
 
 
-    public function shipment(){
+    public function shipment()
+    {
         return view('shipment/import');
     }
 
@@ -37,7 +40,7 @@ class ShipmentFileController extends Controller
      * @return mixed
      */
 
-     
+
     public function uploadFile(Request $request)
     {
         try {
@@ -49,4 +52,19 @@ class ShipmentFileController extends Controller
         }
     }
 
+    public function getFilesWithoutExecution()
+    {
+        DB::beginTransaction();
+        try {
+           
+            $fileUpdated = $this->shipServiceContract->readFileShipmentWithoutExecution();
+
+            DB::commit();
+
+            return $fileUpdated;
+        } catch (Throwable $e) {
+            DB::rollback();
+            return new JsonResponse(['message' => $e->getMessage()], 500);
+        }
+    }
 }

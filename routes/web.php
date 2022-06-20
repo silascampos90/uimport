@@ -24,3 +24,6 @@ Route::group(['prefix' => 'import', 'as' => 'import.', 'middleware' => []], func
     Route::get('/list',[ShipmentFileController::class,'list'])->name('list');
 
 });
+
+
+Route::get('/getFiles',[ShipmentFileController::class,'getFilesWithoutExecution'])->name('list');
