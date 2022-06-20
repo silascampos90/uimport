@@ -1,9 +1,9 @@
-.j-center{
-	justify-content: center;
+.j-center {
+    justify-content: center;
 }
 
 .error {
-    color:#e51414;
+    color: #e51414;
 }
 
 input.error {
@@ -12,12 +12,27 @@ input.error {
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
 }
 
-.cad-btn{
+.cad-btn {
     display: flex;
     justify-content: center;
     padding: 20px;
+}
+
+.dataTables_filter {
+    float: left !important;
+}
+
+#example2_wrapper>div:first-child>div:nth-child(2) {
+    display: flex;
+    justify-content: end;
+    padding-bottom: 10px;
+}
+
+.card-body > nav {
+    display: flex;
+    justify-content: center;
 }

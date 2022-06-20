@@ -22,7 +22,8 @@ class ShipmentFileController extends Controller
     }
 
     public function list(){
-        return view('shipment/list');
+        $filesShipment = $this->shipServiceContract->getShipmentFiles();
+        return view('shipment/list', compact('filesShipment'));
     }
 
 
@@ -36,6 +37,7 @@ class ShipmentFileController extends Controller
      * @return mixed
      */
 
+     
     public function uploadFile(Request $request)
     {
         try {

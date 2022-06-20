@@ -12,13 +12,11 @@ $(document).ready(function () {
             })
         },
         success: function (xhr) {
-            console.log(xhr);
             showAlertSuccess();
             $('#progressBar').hide();
-            console.log('File has uploaded');
         },
         error: function(xhr){
-            console.log(xhr.responseJSON['message']);
+            $('#progressBar').hide();
             showAlertError(xhr.responseJSON['message']);
            }
     });

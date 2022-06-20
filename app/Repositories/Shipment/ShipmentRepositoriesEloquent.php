@@ -14,7 +14,11 @@ use Exception;
 class ShipmentRepositoriesEloquent implements ShipmentRepositoriesContract
 {
 
-   
+    public function __construct(ShipmentFile $shipFile)
+    {
+        $this->shipFile = $shipFile;
+    }
+
 
     public function uploadFile($request)
     {
@@ -26,10 +30,15 @@ class ShipmentRepositoriesEloquent implements ShipmentRepositoriesContract
         $request->file('importCsvFile')->move(public_path('uploads'), $shipFiles->name);
 
         return $shipFiles;
-        
     }
 
-    public function saveUploadFile($fileModel){
+    public function saveUploadFile($fileModel)
+    {
         return $fileModel->save();
+    }
+
+    public function getShipmentFiles()
+    {
+        return $this->shipFile->orderBy('id', 'desc')->paginate(10);
     }
 }

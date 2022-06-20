@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Pagination\Paginator;
 
 use App\Services\Shipment\ShipmentServicesContract;
 use App\Services\Shipment\ShipmentServices;
@@ -26,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Paginator::useBootstrap();
         $this->app->singleton(ShipmentServicesContract::class, ShipmentServices::class);
     }
 }

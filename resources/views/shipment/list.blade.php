@@ -3,58 +3,60 @@
 
 <!--CONTAINER -->
 <div class="page-wrapper">
-    <div class="page-content">
-        <div class="row">
-            <div class="col-12 col-lg-12">
-                <div class="card radius-10">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div>
-                                <h6 class="mb-0">Csv file list/Status</h6>
-                            </div>
-                            <div>
+	<div class="page-content">
+		<div class="row">
+			<div class="col-12 col-lg-12">
+				<div class="card">
+					<div class="card-body">
+						<table id="example2" class="table table-striped table-bordered">
+							<colgroup>
+								<col span="1" style="width: 5%;">
+								<col span="1" style="width: 50%;">
+								<col span="1" style="width: 15%;">
+								<col span="1" style="width: 10%;">
+								<col span="1" style="width: 10%;">
+								<col span="1" style="width: 10%;">
+							</colgroup>
+							<thead>
+								<tr>
+									<th>Id</th>
+									<th>Name</th>
+									<th>Date</th>
+									<th>Size</th>
+									<th>Status</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach($filesShipment as $fs)
+								<tr>
+									<th scope="row">{{ $fs->id }}</th>
+									<td>{{ $fs->name }}</td>
+									<td>{{ $fs->date_import }}</td>
+									<td>{{ $fs->size }} mb</td>
+									<td>{{ $fs->status_id }}</td>
+									<td></td>
+								</tr>
+								@endforeach
+							</tbody>
+							<tfoot>
+								<tr>
+									<th>Id</th>
+									<th>Name</th>
+									<th>Date</th>
+									<th>Size</th>
+									<th>Status</th>
+									<th></th>
+								</tr>
+							</tfoot>
+						</table>
+						{!! $filesShipment->links() !!}
+					</div>
+				</div>
+			</div>
+		</div>
 
-                            </div>
-                        </div>
-                        <div class="d-flex j-center">
-                            <div class="card-body">
-                                <table class="table mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Id</th>
-                                            <th scope="col">File Name</th>
-                                            <th scope="col">Upload Datetime</th>
-                                            <th scope="col">Status</th>
-                                            <th scope="col"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-
-                                        <tr>
-                                            <th></th>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td>
-                                                <a type="button" href="detalhes/{{$e->cep}}" target="" class="btn btn-sm btn-warning"><i class="bx bx-detail mr-1"></i>Detalhar</a>
-                                            </td>
-                                        </tr>
-                                        
-
-                                    </tbody>
-                                </table>
-                            </div>
-
-
-                        </div>
-
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
-    </div>
+	</div>
 </div>
 
 
@@ -63,4 +65,4 @@
 @include('templates/footer');
 
 
-<script src="assets/js/listar.js"></script>
+<script src="{{route('home')}}/assets/js/list.js"></script>
