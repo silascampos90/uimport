@@ -20,31 +20,31 @@ Dentro do projeto clonado:
 Compiar o .env: </br>
     <code>cp .env.example .env</code>
     
-Subindo os container:
-    ./vendor/bin/sail up
-    
+Subindo os container:</br>
+    <code>./vendor/bin/sail up</code>
+</br>   
 *OBS: A primeira execução desse comando pode demorar um pouco.
 
 
 ### ACESSAR O CONTAINER DO APP 
 #### sail-8.1/app
 
-Atualizar a key do Laravel:
-    php artisan key:generate
+Atualizar a key do Laravel:</br>
+    <code>php artisan key:generate</code>
 
-Alterar host DB no .env (Se necessário)
+Alterar host DB no .env (Se necessário):</br>
     DE DB_HOST=127.0.0.1
     PARA DB_HOST=mysql
 
-Migration e Seed
-    php artisan migrate
-    php artisan db:seed
+Migration e Seed:</br>
+    <code>php artisan migrate</code></br>
+    <code>php artisan db:seed</code>
 
-Executar a FILA:
-    php artisan queue:work
-
+Executar a FILA:</br>
+    <code>php artisan queue:work</code>
+</br>
 *OBS: Sem a execução da fila, o arquivo será importado mas não será processado;
 
 ## License
-
+</br>
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
