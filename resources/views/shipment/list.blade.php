@@ -11,8 +11,10 @@
 						<table id="example2" class="table table-striped table-bordered">
 							<colgroup>
 								<col span="1" style="width: 5%;">
-								<col span="1" style="width: 50%;">
+								<col span="1" style="width: 30%;">
 								<col span="1" style="width: 15%;">
+								<col span="1" style="width: 10%;">
+								<col span="1" style="width: 10%;">
 								<col span="1" style="width: 10%;">
 								<col span="1" style="width: 10%;">
 								<col span="1" style="width: 10%;">
@@ -22,6 +24,8 @@
 									<th>Id</th>
 									<th>Name</th>
 									<th>Date</th>
+									<th>Linhas Inseridas</th>
+									<th>Total de Linhas</th>
 									<th>Size</th>
 									<th>Status</th>
 									<th></th>
@@ -32,9 +36,11 @@
 								<tr>
 									<th scope="row">{{ $fs->id }}</th>
 									<td>{{ $fs->name }}</td>
-									<td>{{ $fs->date_import }}</td>
+									<td>{{ $fs->dataFormated() }}</td>
+									<td>{{ $fs->line_read }}</td>
+									<td>{{ $fs->line_total }}</td>
 									<td>{{ $fs->size }} mb</td>
-									<td>{{ $fs->status_id }}</td>
+									<td>{{ $fs->status->name }}</td>
 									<td></td>
 								</tr>
 								@endforeach
@@ -44,6 +50,8 @@
 									<th>Id</th>
 									<th>Name</th>
 									<th>Date</th>
+									<th>Linhas Inseridas</th>
+									<th>Total de Linhas</th>
 									<th>Size</th>
 									<th>Status</th>
 									<th></th>

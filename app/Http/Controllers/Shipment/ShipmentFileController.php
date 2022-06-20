@@ -2,33 +2,42 @@
 
 namespace App\Http\Controllers\Shipment;
 
-use App\Models\ShipmentFile;
 use App\Http\Controllers\Controller;
 use App\Services\Shipment\ShipmentServicesContract;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 use Throwable;
-use Exception;
 
 class ShipmentFileController extends Controller
 {
+
+     /**
+     * @var ShipmentServicesContract
+     */
     protected $shipServiceContract;
 
+    /**
+     * @param ShipmentServicesContract $shipServiceContract
+     */
     public function __construct(
         ShipmentServicesContract $shipServiceContract
     ) {
         $this->shipServiceContract = $shipServiceContract;
     }
 
+     /**
+     * @return View
+     */
     public function list()
     {
         $filesShipment = $this->shipServiceContract->getShipmentFiles();
         return view('shipment/list', compact('filesShipment'));
     }
 
-
+    /**
+     * @return View
+     */
     public function shipment()
     {
         return view('shipment/import');
@@ -39,8 +48,6 @@ class ShipmentFileController extends Controller
      * @param Request $request
      * @return mixed
      */
-
-
     public function uploadFile(Request $request)
     {
         try {
@@ -52,11 +59,14 @@ class ShipmentFileController extends Controller
         }
     }
 
+    /**
+     * Execution files pending
+     */
     public function getFilesWithoutExecution()
     {
         DB::beginTransaction();
         try {
-           
+
             $fileUpdated = $this->shipServiceContract->readFileShipmentWithoutExecution();
 
             DB::commit();
