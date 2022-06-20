@@ -9,7 +9,7 @@
 
 ## About U Import
 
-Projeto Laravel para upload de grandes arquivos php, utilizando fila como tratativa para o time out do php
+Projeto Laravel para upload de grandes arquivos .CSV, utilizando fila como tratativa para o time out do php
 
 ## Execução
 
