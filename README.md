@@ -33,7 +33,7 @@ Atualizar a key do Laravel:</br>
     <code>php artisan key:generate</code>
 
 Alterar host DB no .env (Se necessário):</br>
-    DE DB_HOST=127.0.0.1
+    DE DB_HOST=127.0.0.1</br>
     PARA DB_HOST=mysql
 
 Migration e Seed:</br>
