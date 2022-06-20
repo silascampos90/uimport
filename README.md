@@ -11,6 +11,11 @@
 
 Projeto Laravel para upload de grandes arquivos .CSV, utilizando fila como tratativa para o time out do php
 
+## Ambiente
+#### Laravel 8
+#### PHP 8.1
+#### WLS2 - Distro: Ubuntu 20.04
+
 ## Execução
 
 -------------------------
