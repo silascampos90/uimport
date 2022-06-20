@@ -17,8 +17,8 @@ Projeto Laravel para upload de grandes arquivos php, utilizando fila como tratat
 Dentro do projeto clonado:
     composer install
  
-Compiar o .env:
-    cp .env.example .env
+Compiar o .env: </br>
+    <code>cp .env.example .env</code>
     
 Subindo os container:
     ./vendor/bin/sail up
